@@ -1,3 +1,4 @@
+
 /*
   ==============================================================================
 
@@ -5,6 +6,24 @@
 
   ==============================================================================
 */
+
+//This code was based on tutorials and documentation of:
+//The Audio Programmer - Juce Tutorial series
+//DrBruisin - Compressor Series
+//freeCodeCamp - MatKatMusic's EQ series
+//ChatGPT
+
+//Roadmap:
+//1. Implement needed parameters
+//2. Build basic compressor
+//3. Build basic GUI
+//4. Attach parameters to GUI dials
+//5. Duplicate audio buffer to mix wet and dry
+//6. Build metering
+//7. Implement RMS get
+//8. Customize GUI
+//9. Finetune
+//10.Ship
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
@@ -137,6 +156,8 @@ void CompressorV4AudioProcessor::updateParameters()
     m_compressorModule.setAttack(m_treeState.getRawParameterValue(m_attackID)->load());
     m_compressorModule.setRelease(m_treeState.getRawParameterValue(m_releaseID)->load());
     m_outputModule.setGainDecibels(m_treeState.getRawParameterValue(m_outputID)->load());
+
+    //WETDRY
     m_wetDryMixValue = m_treeState.getRawParameterValue(m_wetdryID)->load();
 }
 
@@ -203,6 +224,7 @@ void CompressorV4AudioProcessor::changeProgramName(int index, const juce::String
 }
 
 //==============================================================================
+
 void CompressorV4AudioProcessor::prepareToPlay(double sampleRate, int samplesPerBlock)
 {
     // Use this method as the place to do any pre-playback
@@ -214,15 +236,12 @@ void CompressorV4AudioProcessor::prepareToPlay(double sampleRate, int samplesPer
     m_spec.numChannels = getTotalNumOutputChannels();
 
     // Prepare DSP modules for processing
-    //m_drywetMix.reset(m_spec.sampleRate,0.02f);
     m_inputModule.prepare(m_spec);
     m_outputModule.prepare(m_spec);
     m_compressorModule.prepare(m_spec);
-    //m_drywetModule.prepare(m_spec);
 
     m_inputModule.setRampDurationSeconds(0.05);//Smooth change from parameter
     m_outputModule.setRampDurationSeconds(0.05);//Smooth change from parameter
-    //m_drywetModule.setWetMixProportion(0.01);//Smooth change from parameter
 
     updateParameters();
 }
@@ -267,6 +286,8 @@ void CompressorV4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, 
     auto totalNumInputChannels = getTotalNumInputChannels();
     auto totalNumOutputChannels = getTotalNumOutputChannels();
 
+    //Duplicating the audio block for wet dry mixing
+    //Unsure if this will cause phase issue
     juce::dsp::AudioBlock<float> block{ buffer };
     juce::AudioBuffer<float> dryBuffer;
     dryBuffer.makeCopyOf(buffer);
@@ -280,6 +301,7 @@ void CompressorV4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, 
     const float wetLevel = m_wetDryMixValue;  // Adjust this value to control the wet level (0.0 to 1.0)
     const float dryLevel = 1.0f - m_wetDryMixValue;
 
+    // Iterate over each input channel
     for (int channel = 0; channel < totalNumInputChannels; ++channel)
     {
         auto* channelData = buffer.getWritePointer(channel);
@@ -288,22 +310,28 @@ void CompressorV4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, 
 
         for (int sample = 0; sample < buffer.getNumSamples(); ++sample)
         {
-            
+            // Iterate over each sample in the buffer
             if (m_wetDryMixValue == 0)
             {
+                // If wet/dry mix is 0, only dry signal is used
                 channelData[sample] = channelDataDry[sample];
             }
+
             else if (m_wetDryMixValue == 1)
             {
+                // If wet / dry mix is 1, no action is taken
             }
+
             else
             {
+                // If wet/dry mix is between 0 and 1, perform the mixing operation
+                // based on dryLevel and wetLevel
                 channelData[sample] = channelDataDry[sample] * dryLevel + channelData[sample] * wetLevel;
             }
         }
     }
 
-    //Get RMS value for visualization level meter
+    //Get RMS value for visualization level meter 
     m_rmsvalueLeft = juce::Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
     m_rmsvalueRight = juce::Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));
     buffer.getRMSLevel(1, 0, buffer.getNumSamples());
