@@ -12,16 +12,15 @@
 //==============================================================================
 CompressorV4AudioProcessorEditor::CompressorV4AudioProcessorEditor(CompressorV4AudioProcessor& p)
 	: AudioProcessorEditor(&p), audioProcessor(p)
-	, m_gainDialLabel("Gain", "Gain")
+	, m_gainDialLabel("Input Gain", "Input Gain")
 	, m_threshDiallLabel("Thresh", "Thresh")
 	, m_ratioDiallLabel("Ratio", "Ratio")
 	, m_attackDialLabel("Attack", "Attack")
 	, m_releaseDiallLabel("Release", "Release")
-	, m_outputDialLabel("MakeupGain", "MakeupGain")
+	, m_outputDialLabel("Makeup Gain", "Makeup Gain")
 	, m_drywetDialLabel("DryWet", "DryWet")
-
 {
-	startTimerHz(84);
+	startTimerHz(42);
 
 	//MeterVisibility
 	addAndMakeVisible(m_horizontalMeterL);
@@ -45,8 +44,8 @@ CompressorV4AudioProcessorEditor::CompressorV4AudioProcessorEditor(CompressorV4A
 
 	//Setting to resizable
 	setSize(1000, 500);
-	juce::AudioProcessorEditor::setResizable(true, true);
-	juce::AudioProcessorEditor::setResizeLimits(getWidth() * 0.75, getHeight() * 0.75, getWidth() * 1.25, getHeight() * 1.25);
+	juce::AudioProcessorEditor::setResizable(false, false);
+	//juce::AudioProcessorEditor::setResizeLimits(getWidth() * 0.75, getHeight() * 0.75, getWidth() * 1.25, getHeight() * 1.25);
 	juce::AudioProcessorEditor::getConstrainer()->setFixedAspectRatio(2.0f);
 	// Make sure that before the constructor has finished, you've set the
 	// editor's size to whatever you need it to be.
@@ -74,15 +73,48 @@ void CompressorV4AudioProcessorEditor::timerCallback()
 //==============================================================================
 void CompressorV4AudioProcessorEditor::paint(juce::Graphics& g)
 {
+	//auto outerUIboxCornerSize = 1 * JUCE_LIVE_CONSTANT(1);
+	//auto outerUIboxThickness = 0.1 * JUCE_LIVE_CONSTANT(1);
+	//auto outerUIboxWidth = getWidth() * JUCE_LIVE_CONSTANT(0.1);
+	//auto outerUIboxHeight = getHeight() * JUCE_LIVE_CONSTANT(0.1);
+	// 
 	// (Our component is opaque, so we must completely fill the background with a solid colour)
 	g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-
+	
 	g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromRGB(202, 222, 220).darker(0.75f)
 	    ,getHeight()
 	    ,juce::Colour::fromRGB(202, 222, 220).brighter(0.02f)
 	    ,getHeight() * 0.4));
 
-	g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), 50.f);
+	//	Main plugin bound background
+	g.fillRoundedRectangle(0, 0, getWidth(), getHeight(), 20.f);
+
+	g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromRGB(202, 222, 220).brighter(0.9f)
+		, getHeight()
+		, juce::Colour::fromRGB(202, 222, 220).darker(0.3f)
+		, getHeight() * 0.4));
+
+	// Rounded bounding box
+	g.drawRoundedRectangle(0, 0, getWidth(), getHeight(), 20, 19);
+
+	g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromRGB(202, 222, 220).brighter(0.2f)
+		, getHeight()
+		, juce::Colour::fromRGB(202, 222, 220).brighter(0.6f)
+		, getHeight() * 0.4));	
+
+	//auto liveConstantDebugMultiplyer = 1 * JUCE_LIVE_CONSTANT(0.1);
+
+	// Meter framing
+	g.fillRoundedRectangle(getWidth()* 0.19, 28, 620, 100, 10);
+
+	g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromRGB(202, 222, 220).brighter(0.9f)
+		, getHeight()
+		, juce::Colour::fromRGB(202, 222, 220).darker(0.2f)
+		, getHeight() * 0.4));
+
+	// Meter fancy outline
+	g.drawRoundedRectangle(190, 28, 620, 100, 10, 2);
+
 
 	for (size_t index = 0; index < m_dials.size(); index++)
 	{
@@ -102,7 +134,7 @@ void CompressorV4AudioProcessorEditor::resized()
 	auto verticalMargin = static_cast<int>(getHeight() * 0.3);
 
 	m_attackDial.setBounds(mainLeftMargin
-		, 35
+		, 50
 		, dialSize
 		, dialSize);
 
@@ -119,17 +151,17 @@ void CompressorV4AudioProcessorEditor::resized()
 	//
 	m_threshDial.setBounds(mainLeftMargin*2 + dialSize + mainRightMargin
 		, static_cast<int>(getHeight() * 0.32)
-		, static_cast<int>(dialSize * 2.2)
+		, static_cast<int>(dialSize * 2.4)
 		, static_cast<int>(dialSize * 2.4));
 
 	m_outputDial.setBounds(m_threshDial.getX() + m_threshDial.getWidth() + mainRightMargin
 		, static_cast<int>(getHeight() * 0.32)
 		, static_cast<int>(dialSize * 2.4)
-		, static_cast<int>(dialSize * 2.24));
+		, static_cast<int>(dialSize * 2.4));
 	//
 
 	m_gainDial.setBounds(m_attackDial.getX() + m_attackDial.getWidth() * 6.2
-		, 30
+		, 50
 		, dialSize
 		, dialSize);
 
@@ -138,7 +170,10 @@ void CompressorV4AudioProcessorEditor::resized()
 		, dialSize
 		, dialSize);
 
+	//auto boxX = 1 * JUCE_LIVE_CONSTANT(0.1);
+	//auto boxY = 1 * JUCE_LIVE_CONSTANT(0.1);
+
 	//Meter bounds
-	m_horizontalMeterL.setBounds(getWidth()*0.2, 40, 600, 35);
-	m_horizontalMeterR.setBounds(getWidth() *0.2, 80, 600, 35);
+	m_horizontalMeterL.setBounds(static_cast<int>(getWidth()* 0.2), static_cast<int>(getWidth() * 0.037), 600, 35);
+	m_horizontalMeterR.setBounds(static_cast<int>(getWidth()* 0.2), static_cast<int>(getWidth() * 0.083), 600, 35);
 }

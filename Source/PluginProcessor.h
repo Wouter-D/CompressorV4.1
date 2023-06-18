@@ -68,8 +68,9 @@ private:
     void parameterChanged(const juce::String& parameterID, float newValue) override; // Called when a parameter value changes
     void updateParameters(); // Update the parameters of the processor
 
-    float m_rmsvalueLeft, m_rmsvalueRight;
+    juce::LinearSmoothedValue<float> m_rmsvalueLeft, m_rmsvalueRight;
     float m_wetDryMixValue;
+    int CompressorV4AudioProcessor::calculateDelaySamples() const;
 
     //float m_blendValue = 0.5f;
     //==============================================================================

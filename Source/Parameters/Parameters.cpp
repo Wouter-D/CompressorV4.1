@@ -10,8 +10,8 @@
 
 #include "Parameters.h"
 
-const juce::String m_gainID         = "gain";
-const juce::String m_gainName       = "Gain";
+const juce::String m_inputgainID         = "gain";
+const juce::String m_inputgainName       = "Gain";
 
 const juce::String m_threshID       = "thresh";
 const juce::String m_threshName     = "Thresh";
@@ -25,8 +25,8 @@ const juce::String m_attackName     = "Attack";
 const juce::String m_releaseID      = "release";
 const juce::String m_releaseName    = "Release";
 
-const juce::String m_outputID       = "makeupGain";
-const juce::String m_outputName     = "MakeupGain";
+const juce::String m_makeupgainID       = "makeupGain";
+const juce::String m_makeupgainName     = "MakeupGain";
 
 const juce::String m_wetdryID       = "wetDry";
 const juce::String m_wetdryName     = "WetDry";

@@ -13,8 +13,8 @@
 
 
 //Declaring these externally, global
-extern const juce::String m_gainID;
-extern const juce::String m_gainName;
+extern const juce::String m_inputgainID;
+extern const juce::String m_makeupgainName;
 
 extern const juce::String m_threshID;
 extern const juce::String m_threshName;
@@ -28,8 +28,8 @@ extern const juce::String m_attackName;
 extern const juce::String m_releaseID;
 extern const juce::String m_releaseName;
 
-extern const juce::String m_outputID;
-extern const juce::String m_outputName;
+extern const juce::String m_makeupgainID;
+extern const juce::String m_makeupgainName;
 
 extern const juce::String m_wetdryID;
 extern const juce::String m_wetdryID;

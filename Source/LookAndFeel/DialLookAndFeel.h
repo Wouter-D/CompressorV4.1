@@ -21,7 +21,6 @@ public:
         const float rotaryStartAngle, const float rotaryEndAngle, juce::Slider& slider) override;
 
     void drawLabel(juce::Graphics& g, juce::Label& label) override;
-    void getBaseFont();
    
 private:
     float m_sliderWidth;
