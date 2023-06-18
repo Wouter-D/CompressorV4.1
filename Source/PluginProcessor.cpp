@@ -333,11 +333,6 @@ void CompressorV4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, 
 	auto totalNumInputChannels = getTotalNumInputChannels();
 	auto totalNumOutputChannels = getTotalNumOutputChannels();
 
-	//Duplicating the audio block for wet dry mixing
-	//Unsure if this will cause phase issue
-	juce::dsp::AudioBlock<float> block{ buffer };
-	juce::AudioBuffer<float> dryBuffer;
-
 	//buffer.getRMSLevel(0, 0, buffer.getNumSamples());
 	//buffer.getRMSLevel(1, 0, buffer.getNumSamples());
 
