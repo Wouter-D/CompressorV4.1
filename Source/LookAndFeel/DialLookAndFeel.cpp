@@ -64,7 +64,7 @@ void DialLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int widt
     {
         auto dotSize = width * 0.025;
 
-       // IF you change the number of dots, do i / (num dots - 1) 
+       // IF you change the number of dots, do i / (num dots - 1)
        // const auto angle = juce::jmap(i / 10.0f, rotaryStartAngle, rotaryEndAngle);
         const float angle = juce::jmap(i / 2.0f, rotaryStartAngle, rotaryEndAngle);
 
@@ -195,7 +195,7 @@ void DialLookAndFeel::drawRotarySlider(juce::Graphics& g, int x, int y, int widt
 }
 
 void DialLookAndFeel::drawLabel(juce::Graphics& g, juce::Label& label)
-{    
+{
     // Fill the graphics context with the background color of the label
     g.fillAll(label.findColour(juce::Label::backgroundColourId));
 
@@ -242,5 +242,3 @@ void DialLookAndFeel::drawLabel(juce::Graphics& g, juce::Label& label)
     // Draw a rectangle around the label's local bounds
     g.drawRect(label.getLocalBounds());
 }
-
-

@@ -78,7 +78,7 @@ void CompressorV4AudioProcessorEditor::setSliderProperties(juce::Slider& slider)
 
 void CompressorV4AudioProcessorEditor::setLabelProperties(juce::Label& label)
 {
-	
+
 }
 
 void CompressorV4AudioProcessorEditor::attachSliders()

@@ -77,10 +77,10 @@ void CompressorV4AudioProcessorEditor::paint(juce::Graphics& g)
 	//auto outerUIboxThickness = 0.1 * JUCE_LIVE_CONSTANT(1);
 	//auto outerUIboxWidth = getWidth() * JUCE_LIVE_CONSTANT(0.1);
 	//auto outerUIboxHeight = getHeight() * JUCE_LIVE_CONSTANT(0.1);
-	// 
+	//
 	// (Our component is opaque, so we must completely fill the background with a solid colour)
 	g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
-	
+
 	g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromRGB(202, 222, 220).darker(0.75f)
 	    ,getHeight()
 	    ,juce::Colour::fromRGB(202, 222, 220).brighter(0.02f)
@@ -100,7 +100,7 @@ void CompressorV4AudioProcessorEditor::paint(juce::Graphics& g)
 	g.setGradientFill(juce::ColourGradient::vertical(juce::Colour::fromRGB(202, 222, 220).brighter(0.2f)
 		, getHeight()
 		, juce::Colour::fromRGB(202, 222, 220).brighter(0.6f)
-		, getHeight() * 0.4));	
+		, getHeight() * 0.4));
 
 	//auto liveConstantDebugMultiplyer = 1 * JUCE_LIVE_CONSTANT(0.1);
 

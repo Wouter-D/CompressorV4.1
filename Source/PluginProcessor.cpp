@@ -14,44 +14,44 @@
 //  ChatGPT
 
 //  Roadmap:
-// 
+//
 //  1. Implement needed parameters
 //      -What dials do I need?
 //      -What modules?
 //      -How to update parameter values?
-// 
+//
 //  2. Build basic compressor
 //      -Compression calculation
 //      -Set parameter ranges
 //      -Set parameter values to ranges
-// 
+//
 //  3. Build basic GUI
 //      -Implement correct dial placement
 //      -Apply basic concept color pallet
-// 
+//
 //  4. Attach parameters to GUI dials
-//    
+//
 //  5. Duplicate audio buffer to mix wet and dry
 //      -Duplicate inputSignal to dry and wet
 //      -Implement dry/wet mix
-// 
+//
 //  6. Build metering
 //      -RMS check?
 //      -Implement visual metering
 //      -Attach rms return to meter
-// 
+//
 //  7. Customize GUI
 //      -Set a custom look and feel based on initial concept
-// 
+//
 //  8. Finetune
-// 
+//
 //  9.Ship
 
 //  Used ChatGPT as virtual rubberducky. Learned about the juce framework by asking what each block provided does.
 //  Implemented and iterated modules and parameters based in the DrBruisin compressor concept
-//  Constant refactoring using ChatGPT. Asking it literally if my code made sense and how to best approach correct implementation. 
-// 
-//  Due to Git authentication, pushing to repo and partial file corruptions, I had to re-do the remote push a few times. 
+//  Constant refactoring using ChatGPT. Asking it literally if my code made sense and how to best approach correct implementation.
+//
+//  Due to Git authentication, pushing to repo and partial file corruptions, I had to re-do the remote push a few times.
 //  While annoying to re-visit code in a panicked state isn't fun. It did force me to be more efficient handling projects.
 
 #include "PluginProcessor.h"
@@ -111,8 +111,8 @@ void CompressorV4AudioProcessor::parameterChanged(const juce::String& parameterI
 
 juce::AudioProcessorValueTreeState::ParameterLayout CompressorV4AudioProcessor::createParameterLayout()
 {
-	//  Use smart pointers in ParameterLayout creation: 
-	//  Instead of manually creating unique pointers and pushing them into the params vector, 
+	//  Use smart pointers in ParameterLayout creation:
+	//  Instead of manually creating unique pointers and pushing them into the params vector,
 	//  you can use std::make_unique directly in the push_back function
 
 	std::vector <std::unique_ptr<juce::RangedAudioParameter>> params;
@@ -324,10 +324,11 @@ void CompressorV4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, 
 
 	juce::ScopedNoDenormals noDenormals;
 
-	
-
-
-
+	//Duplicating the audio block for wet dry mixing
+	//Unsure if this will cause phase issue
+	juce::dsp::AudioBlock<float> block{ buffer };
+	juce::AudioBuffer<float> dryBuffer;
+	dryBuffer.makeCopyOf(buffer);
 
 	auto totalNumInputChannels = getTotalNumInputChannels();
 	auto totalNumOutputChannels = getTotalNumOutputChannels();
@@ -403,7 +404,7 @@ void CompressorV4AudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, 
 			m_rmsvalueRight.setCurrentAndTargetValue(value);
 	}
 
-	//Get RMS value for visualization level meter 
+	//Get RMS value for visualization level meter
 	/*m_rmsvalueLeft = juce::Decibels::gainToDecibels(buffer.getRMSLevel(0, 0, buffer.getNumSamples()));
 	m_rmsvalueRight = juce::Decibels::gainToDecibels(buffer.getRMSLevel(1, 0, buffer.getNumSamples()));*/
 }

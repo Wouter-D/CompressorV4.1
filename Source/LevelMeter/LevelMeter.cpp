@@ -22,7 +22,7 @@ void Gui::LevelMeter::paint(juce::Graphics& g)
         getLocalBounds()));
 
     g.setGradientFill(juce::ColourGradient::horizontal(
-        juce::Colours::midnightblue.darker(0.2f), 
+        juce::Colours::midnightblue.darker(0.2f),
         juce::Colours::cadetblue.darker(0.9f),
         getLocalBounds()));
 
